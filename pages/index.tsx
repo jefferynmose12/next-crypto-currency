@@ -1,9 +1,15 @@
+import useFetch from "@/src/hooks/useFetch";
 import Head from "next/head";
 import Image from "next/image";
 import React from "react";
+import { CardBoxProps } from '../src/type'
+import { useRouter } from "next/router";
 
 const Home: React.FC = () => {
-  const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9]; // Replace this with your actual data
+  const Router = useRouter();
+
+  const { cards } = useFetch()
+
   return (
     <>
       <Head>
@@ -24,25 +30,28 @@ const Home: React.FC = () => {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
           {/* End hero unit */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {cards.map((card) => (
-              <div key={card} className="flex flex-col">
+            {cards.slice(0, 45)?.map(({id, image, name, current_price, high_24h, low_24h } : CardBoxProps, card: any ) => (
+              <div key={name} className="flex flex-col">
                 <Image
-                  src={`https://picsum.photos/200/200`}
+                  src={image}
                   alt="placeholder"
                   width={200}
                   height={200}
                   className="object-cover object-center"
                 />
-                <div className="flex-1 p-4">
-                  <h2 className="text-xl font-semibold mb-2">Currency Name</h2>
+                <div className="flex-1 p-4 bg-white my-2">
+                  <h2 className="text-xl font-semibold mb-2">{name}</h2>
                   <ul className="list-disc pl-5">
-                    <li>Current Price: xxx</li>
-                    <li>24h High: xxx</li>
-                    <li>24h Low: xxx</li>
+                    <li>Current Price: {current_price}</li>
+                    <li>24h High: {high_24h}</li>
+                    <li>24h Low: {low_24h}</li>
                   </ul>
                 </div>
                 <div className="p-4">
-                  <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                  <button 
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                    onClick={() => Router.push(`/currency/${id}`)}
+                  >
                     More
                   </button>
                 </div>
